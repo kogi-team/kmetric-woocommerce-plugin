@@ -1,0 +1,248 @@
+@font-face {
+    font-family: 'kmetric_din';
+    src: url('../fonts/svn-pf_din_text_pro_regular-webfont.woff2') format('woff2'),
+         url('../fonts/svn-pf_din_text_pro_regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.kmetric-masthead {
+	font-family: kmetric_din, sans-serif;
+	background-color:#fff;
+	text-align:center;
+	box-shadow:0 1px 0 rgba(200,215,225,0.5),0 1px 2px #e9eff3
+}
+#kmetric-plugin-container img {
+	max-width: 100%;
+}
+.kmetric-masthead__inside-container {
+	padding:.375rem 0;
+	margin:0 auto;
+	width:100%;
+	max-width:45rem;
+	text-align: left;
+}
+.kmetric-masthead__logo-container {
+	padding:.3125rem 0 0
+}
+.kmetric-masthead__logo {
+	display: block;
+	margin: 0 auto;
+	width:auto;
+	height:3rem;
+}
+.kmetric-masthead__logo-link {
+	display:inline-block;
+	outline:none;
+	vertical-align:middle
+}
+.kmetric-masthead__logo-link:focus {
+	line-height:0;
+	box-shadow:0 0 0 2px #78dcfa
+}
+.kmetric-masthead__logo-link+code {
+	margin:0 10px;
+	padding:5px 9px;
+	border-radius:2px;
+	background:#e6ecf1;
+	color:#647a88
+}
+.kmetric-masthead__links {
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-flow:row wrap;
+	flex-flow:row wrap;
+	-ms-flex:2 50%;
+	flex:2 50%;
+	-ms-flex-pack:end;
+	justify-content:flex-end;
+	margin:0
+}
+.kmetric-masthead__link-li {
+	margin:0;
+	padding:0
+}
+.kmetric-masthead__link {
+	font-style:normal;
+	color:#0087be;
+	padding:.625rem;
+	display:inline-block
+}
+.kmetric-masthead__link:visited {
+	color:#0087be
+}
+.kmetric-masthead__link:active,.kmetric-masthead__link:hover {
+	color:#00aadc
+}
+.kmetric-masthead__link:hover {
+	text-decoration:underline
+}
+.kmetric-masthead__link .dashicons {
+	display:none
+}
+.kmetric-masthead__link-li:last-of-type .kmetric-masthead__link {
+	padding-right:0
+}
+
+.kmetric-lower {
+	margin: 0 auto;
+	text-align: left;
+	max-width: 45rem;
+	padding: 1.5rem;
+}
+
+.kmetric-lower .notice {
+	margin-bottom: 2rem;
+}
+
+.kmetric-card {
+	margin-top: 1rem;
+	margin-bottom: 0;
+	position: relative;
+	margin: 0 auto 0.625rem auto;
+	box-sizing: border-box;
+	background: white;
+	box-shadow: 0 0 0 1px rgba(200, 215, 225, 0.5), 0 1px 2px #e9eff3;
+}
+
+.kmetric-card:after, .kmetric-card .inside:after, .kmetric-masthead__logo-container:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.kmetric-card .inside {
+	padding: 1.5rem;
+	padding-top: 1rem;
+}
+
+.kmetric-card .kmetric-card-actions {
+	margin-top: 1rem;
+}
+
+.kmetric-masthead .kmetric-right {
+	line-height: 2.125rem;
+	font-size: 0.9rem;
+}
+
+.kmetric-box {
+	box-sizing: border-box;
+	background: white;
+	border: 1px solid rgba(200, 215, 225, 0.5);
+}
+
+.kmetric-box h2, .kmetric-box h3 {
+	padding: 1.5rem 1.5rem .5rem 1.5rem;
+	margin: 0;
+}
+
+.kmetric-box p {
+	padding: 0 1.5rem 1.5rem 1.5rem;
+	margin: 0;
+}
+	
+.kmetric-box p:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.kmetric-box .kmetric-right {
+	padding-right: 1.5rem;
+}
+
+.kmetric-boxes .kmetric-box {
+	margin-bottom: 0;
+	padding: 0;
+	margin-top: -1px;
+}
+
+.kmetric-boxes .kmetric-box:last-child {
+	margin-bottom: 1.5rem;
+}
+
+.kmetric-boxes .kmetric-box:first-child {
+	margin-top: 1.5rem;
+}
+
+.kmetric-button, .kmetric-button:hover, .kmetric-button:visited {
+	background: white;
+	border-color: #c8d7e1;
+	border-style: solid;
+	border-width: 1px 1px 2px;
+	color: #2e4453;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0;
+	outline: 0;
+	overflow: hidden;
+	font-size: 14px;
+	font-weight: 500;
+	text-overflow: ellipsis;
+	text-decoration: none;
+	vertical-align: top;
+	box-sizing: border-box;
+	font-size: 14px;
+	line-height: 21px;
+	border-radius: 4px;
+	padding: 7px 14px 9px;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.kmetric-button:hover {
+	border-color: #a8bece;
+}
+
+.kmetric-button:active {
+	border-width: 2px 1px 1px;
+}
+
+.kmetric-is-primary, .kmetric-is-primary:hover, .kmetric-is-primary:visited {
+	background: #00aadc;
+	border-color: #0087be;
+	color: white;
+}
+
+.kmetric-is-primary:hover, .kmetric-is-primary:focus {
+    border-color: #005082;
+}
+
+.kmetric-is-primary:hover {
+	border-color: #005082;
+}
+
+.kmetric-section-header {
+	position: relative;
+	margin: 0 auto 0.625rem auto;
+	padding: 1rem;
+	box-sizing: border-box;
+	box-shadow: 0 0 0 1px rgba(200, 215, 225, 0.5), 0 1px 2px #e9eff3;
+	background: #ffffff;
+	width: 100%;
+	padding-top: 0.6875rem;
+	padding-bottom: 0.6875rem;
+	display: flex;
+}
+
+.kmetric-section-header__label {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center;
+	-ms-flex-positive: 1;
+	flex-grow: 1;
+	line-height: 1.75rem;
+	position: relative;
+	font-size: 0.875rem;
+	color: #4f748e;
+}
+
+.kmetric-section-header__actions {
+	line-height: 1.75rem;
+}

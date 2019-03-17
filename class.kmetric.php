@@ -16,25 +16,18 @@ class Kmetric {
 		 **/
 		if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 			/**
-			 * Register Tracking
+			 * User Tracking
 			 */     
-            add_action( 'user_register', array( 'Kmetric', 'kmetric_wordpress_user_register') );
-
-			/**
-			 * Login Tracking
-			 */  
-            add_action('wp_login', array( 'Kmetric', 'kmetric_wordpress_user_login') );
+            // add_action( 'user_register', array( 'Kmetric', 'kmetric_wordpress_user_register') );
+            // add_action('wp_login', array( 'Kmetric', 'kmetric_wordpress_user_login') );
 
 			/**
 			 * E-commerce Behavior Tracking
 			 */
-            add_action('woocommerce_add_to_cart', array( 'Kmetric', 'kmetric_woocommerce_add_to_cart') );
-            add_action('woocommerce_remove_cart_item', array( 'Kmetric', 'kmetric_woocommerce_remove_cart_item') );
-
-             /**
-			 * Ecommerce Tracking - Payment
-			 */
-			add_action('woocommerce_payment_complete', array( 'Kmetric', 'kmetric_woocommerce_payment_complete'));
+            add_action('woocommerce_after_single_product', array( 'Kmetric', 'kmetric_woocommerce_product_detail'), 5 );
+            add_action('woocommerce_add_to_cart', array( 'Kmetric', 'kmetric_woocommerce_add_to_cart'), 10, 6 );
+            add_action('woocommerce_remove_cart_item', array( 'Kmetric', 'kmetric_woocommerce_remove_cart_item'), 10, 2 );
+            add_action('woocommerce_after_checkout_form', array( 'Kmetric', 'kmetric_woocommerce_cart_checkout') );
 
 		}
     }
@@ -104,7 +97,25 @@ class Kmetric {
         }
     }
 
-    public static function kmetric_woocommerce_add_to_cart() {
+    public static function kmetric_woocommerce_product_detail(){
+        $kmetric_product_id = self::get_product_id();
+		if( $kmetric_product_id ) {
+            $product = wc_get_product();
+            echo '<script>
+                var kmetric_params = [];
+                kmetric_params["fp_id"] = "'.$_COOKIE['kmetric_fp_id'].'";
+                kmetric_params["user_id"] = "'.get_current_user_id().'";
+                kmetric_params["e_items"] = [{
+                    "id" : "'.$product->get_id().'",
+                    "name" : "'.$product->get_name().'"
+                }];
+                kmetric_params["e_action"] = "detail";
+                kg("ecommerce", "'.$kmetric_product_id.'", kmetric_params);
+            </script>';
+        }
+    }
+
+    public static function kmetric_woocommerce_add_to_cart( $cart_item_key = null, $product_id = null, $quantity = null, $variation_id = null, $variation = null, $cart_item_data = null) {
         $kmetric_product_id = self::get_product_id();
 
         if( $kmetric_product_id ) {
@@ -112,103 +123,89 @@ class Kmetric {
             $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
             $params["product_id"] = $kmetric_product_id;
             $params["e_action"] = 'add_card';
-
-            $items = array();
-            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-                if($cart_item_key === $cart_remove_item_key) {
-                    $product = wc_get_product( $cart_item['product_id'] );
-                    array_push($items, array(
-                        'id' => $product->get_id(),
-                        'name' => $product->get_name()
-                    ));
-                }
+            
+            if(get_current_user_id()) {
+                $params["user_id"] = get_current_user_id();
             }
 
+            $items = array();
+            $product = wc_get_product( $product_id );
+            array_push($items, array(
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'quantity' => $quantity
+            ));
             $params["e_items"] = $items;
 
-            wp_remote_post('https://api.kmetric.io/api/v1/ecommerce/behavior', array(
+            wp_remote_post('https://api.kmetric.io/api/v1/server-side/ecommerce/behavior', array(
                 'method' => 'POST',
                 'timeout' => 5,
-                'headers' => array(),
-                'body' => json_encode($params),
+                'headers' => array(
+                    'content-type' => 'multipart/form-data'
+                ),
+                'body' => $params,
             ));
         }
     }
 
-    public static function kmetric_woocommerce_remove_cart_item( $cart_remove_item_key ) {
+    public static function kmetric_woocommerce_remove_cart_item( $cart_item_key, $instance ) {
         $kmetric_product_id = self::get_product_id();
 
         if( $kmetric_product_id ) {
-            $items = array();
-            foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-                if($cart_item_key === $cart_remove_item_key) {
-                    $product = wc_get_product( $cart_item['product_id'] );
-                    array_push($items, array(
-                        'id' => $product->get_id(),
-                        'name' => $product->get_name()
-                    ));
-                }
-            }
-
             $params = [];
             $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
             $params["product_id"] = $kmetric_product_id;
             $params["e_action"] = 'remove_card';
+            
+            if(get_current_user_id()) {
+                $params["user_id"] = get_current_user_id();
+            }
+
+            $items = array();
+            $product = wc_get_product( $instance->cart_contents[$cart_item_key]['product_id'] );
+            array_push($items, array(
+                'id' => $product->get_id(),
+                'name' => $product->get_name(),
+                'quantity' => $instance->cart_contents[$cart_item_key]['quantity']
+            ));
             $params["e_items"] = $items;
 
-            wp_remote_post('https://api.kmetric.io/api/v1/ecommerce/behavior', array(
+            wp_remote_post('https://api.kmetric.io/api/v1/server-side/ecommerce/behavior', array(
                 'method' => 'POST',
                 'timeout' => 5,
-                'headers' => array(),
-                'body' => json_encode($params),
+                'headers' => array(
+                    'content-type' => 'multipart/form-data'
+                ),
+                'body' => $params,
             ));
         }
     }
 
-	public static function kmetric_woocommerce_payment_complete( $order_id ) {
+    public static function kmetric_woocommerce_cart_checkout(){
         $kmetric_product_id = self::get_product_id();
-
 		if( $kmetric_product_id ) {
-            $params = [];
-            
-			$order = wc_get_order( $order_id );
-			$order->get_total();
-            $line_items = $order->get_items();
-            
-			$items = array();
-			foreach ( $line_items as $item_product ) {
-				$product = $order->get_product_from_item( $item_product );
+            $product = wc_get_product();
+            $return = '<script>
+                var kmetric_params = [];
+                kmetric_params["fp_id"] = "'.$_COOKIE['kmetric_fp_id'].'";
+                kmetric_params["user_id"] = "'.get_current_user_id().'";
+                kmetric_params["e_items"] = [];';
+                
+            foreach ( WC()->cart->get_cart() as $cart_item ) {
+                $product = $cart_item['data'];
+                if(!empty($product)){
+                    $return .= 'kmetric_params["e_items"].push({
+                        "id" : "'.$product->get_id().'",
+                        "name" : "'.$product->get_name().'"
+                    });';
+                }
+            };
 
-				$item = array();
-				$item['id'] = $item_product->get_product_id();
-				$item['name'] = $product->get_name();
-				$item['sku'] = $product->get_sku();
-				$item['qty'] = $item_product['qty'];
-				$item['total'] = $order->get_line_total( $item_product, true, true );
-				array_push($items, $item);
-            }
-            
-            $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
-            $params["product_id"] = $kmetric_product_id;
-            $params['user_id'] = $user->ID;
-            $params['payment_transaction_id'] = $order->get_transaction_id();
-            $params["payment_amount"] = $order->get_total();
-            $params["payment_tax_amount"] = $order->get_total_tax();
-            $params["payment_shipping_amount"] = $order->get_shipping_total();
-            $params["payment_affiliation"] = '';
-            $params["user_id"] = $order->get_customer_id();
-            $params["payment_items"] = $items;
-            $params["payment_status"] = $order->get_status();
-            $params["payment_order_id"] = $order_id;
-
-            wp_remote_post('https://api.kmetric.io/api/v1/login', array(
-                'method' => 'POST',
-                'timeout' => 5,
-                'headers' => array(),
-                'body' => json_encode($params),
-            ));
-		}
-	}
-
+            $return .= 'kmetric_params["e_action"] = "checkout";';
+            $return .= 'kg("ecommerce", "'.$kmetric_product_id.'", kmetric_params);';
+            $return .= '</script>';
+            echo $return;
+        }
+    }
      
 }

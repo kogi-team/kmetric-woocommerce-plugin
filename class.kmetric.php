@@ -118,7 +118,7 @@ class Kmetric {
     public static function kmetric_woocommerce_add_to_cart( $cart_item_key = null, $product_id = null, $quantity = null, $variation_id = null, $variation = null, $cart_item_data = null) {
         $kmetric_product_id = self::get_product_id();
 
-        if( $kmetric_product_id ) {
+        if( $kmetric_product_id && count(WC()->cart->get_cart()) === 1 ) {
             $params = [];
             $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
             $params["product_id"] = $kmetric_product_id;
@@ -151,7 +151,7 @@ class Kmetric {
     public static function kmetric_woocommerce_remove_cart_item( $cart_item_key, $instance ) {
         $kmetric_product_id = self::get_product_id();
 
-        if( $kmetric_product_id ) {
+        if( $kmetric_product_id && count(WC()->cart->get_cart()) === 0 ) {
             $params = [];
             $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
             $params["product_id"] = $kmetric_product_id;

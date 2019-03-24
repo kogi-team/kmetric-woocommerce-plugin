@@ -106,8 +106,11 @@ class Kmetric {
                 kmetric_params["fp_id"] = "'.$_COOKIE['kmetric_fp_id'].'";
                 kmetric_params["user_id"] = "'.get_current_user_id().'";
                 kmetric_params["e_items"] = [{
-                    "id" : "'.$product->get_id().'",
-                    "name" : "'.$product->get_name().'"
+                    "id" : "'.addslashes($product->get_id()).'",
+                    "name" : "'.addslashes($product->get_name()).'",
+                    "sku" : "'.addslashes($product->get_sku()).'",
+                    "category" : "'.addslashes(strip_tags($product->get_categories(), '')).'",
+                    "price" : "'.addslashes($product->get_price()).'"
                 }];
                 kmetric_params["e_action"] = "detail";
                 kg("ecommerce", "'.$kmetric_product_id.'", kmetric_params);
@@ -131,9 +134,12 @@ class Kmetric {
             $items = array();
             $product = wc_get_product( $product_id );
             array_push($items, array(
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'quantity' => $quantity
+                'id' => addslashes($product->get_id()),
+                'name' => addslashes($product->get_name()),
+                'sku' => addslashes($product->get_sku()),
+                'category' => addslashes(strip_tags($product->get_categories(), '')),
+                'price' => addslashes($product->get_price()),
+                'quantity' => addslashes($quantity)
             ));
             $params["e_items"] = $items;
 
@@ -164,9 +170,12 @@ class Kmetric {
             $items = array();
             $product = wc_get_product( $instance->cart_contents[$cart_item_key]['product_id'] );
             array_push($items, array(
-                'id' => $product->get_id(),
-                'name' => $product->get_name(),
-                'quantity' => $instance->cart_contents[$cart_item_key]['quantity']
+                'id' => addslashes($product->get_id()),
+                'name' => addslashes($product->get_name()),
+                'sku' => addslashes($product->get_sku()),
+                'category' => addslashes(strip_tags($product->get_categories(), '')),
+                'price' => addslashes($product->get_price()),
+                'quantity' => addslashes($instance->cart_contents[$cart_item_key]['quantity'])
             ));
             $params["e_items"] = $items;
 
@@ -195,8 +204,11 @@ class Kmetric {
                 $product = $cart_item['data'];
                 if(!empty($product)){
                     $return .= 'kmetric_params["e_items"].push({
-                        "id" : "'.$product->get_id().'",
-                        "name" : "'.$product->get_name().'"
+                        "id" : "'.addslashes($product->get_id()).'",
+                        "name" : "'.addslashes($product->get_name()).'",
+                        "sku" : "'.addslashes($product->get_sku()).'",
+                        "category" : "'.addslashes(strip_tags($product->get_categories(), '')).'",
+                        "price" : "'.addslashes($product->get_price()).'"
                     });';
                 }
             };

@@ -10,6 +10,7 @@ class Kmetric {
 	 * Initializes WordPress hooks
 	 */
     private static function init_hooks() {
+        add_filter('plugin_row_meta', array( 'Kmetric', 'plugin_row_meta' ), 10, 2 );
 		add_action('wp_head', array( 'Kmetric', 'kmetric_load_sdk' ));
 		/**
 		 * Check if WooCommerce is active
@@ -32,6 +33,15 @@ class Kmetric {
 		}
     }
 
+	public static function plugin_row_meta( $links, $file ) {
+        $row_meta = array(
+            'docs'    => '<a href="https://www.kmetric.io/docs/getting-started" aria-label="Docs">Getting Started</a>',
+            'apidocs' => '<a href="https://www.kmetric.io/docs/tracking-api" aria-label="API docs">API docs</a>',
+            'support' => '<a href="mailto:support@kmetric.io" aria-label="Contact">Contact</a>',
+        );
+        return array_merge( $links, $row_meta );
+    }
+    
     public static function get_product_id() {
 		return get_option('wordpress_kmetric_product_id');
     }

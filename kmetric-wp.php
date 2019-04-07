@@ -16,13 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'KMETRIC__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'KMETRIC_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'KMETRIC_PLUGIN_FILE', __FILE__ );
+define( 'KMETRIC_PLUGIN_BASENAME', plugin_basename( KMETRIC_PLUGIN_FILE ) );
 
-require_once( KMETRIC__PLUGIN_DIR . 'class.kmetric.php' );
+require_once( KMETRIC_PLUGIN_DIR . 'class.kmetric.php' );
 
 add_action( 'init', array( 'Kmetric', 'init' ) );
 
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once( KMETRIC__PLUGIN_DIR . 'class.kmetric-admin.php' );
+	require_once( KMETRIC_PLUGIN_DIR . 'class.kmetric-admin.php' );
 	add_action( 'init', array( 'Kmetric_Admin', 'init' ) );
 }

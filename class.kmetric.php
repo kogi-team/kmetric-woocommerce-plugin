@@ -5,12 +5,25 @@ class Kmetric {
     public static function init() {
 		self::init_hooks();
     }
-    
+
+	/**
+	 * Define constant if not already set.
+	 *
+	 * @param string      $name  Constant name.
+	 * @param string|bool $value Constant value.
+	 */
+	private static function define( $name, $value ) {
+		if ( ! defined( $name ) ) {
+			define( $name, $value );
+		}
+    }
+
     /**
 	 * Initializes WordPress hooks
 	 */
     private static function init_hooks() {
-        add_filter('plugin_row_meta', array( 'Kmetric', 'plugin_row_meta' ), 10, 2 );
+        add_filter( 'plugin_action_links', array( __CLASS__, 'plugin_action_links' ), 10, 2);
+        add_filter( 'plugin_row_meta', array( __CLASS__, 'plugin_row_meta' ), 10, 2 );
 		add_action('wp_head', array( 'Kmetric', 'kmetric_load_sdk' ));
 		/**
 		 * Check if WooCommerce is active
@@ -33,13 +46,26 @@ class Kmetric {
 		}
     }
 
+    public static function plugin_action_links( $links, $file ) {
+        if ( $file == KMETRIC_PLUGIN_BASENAME ) {
+            $action_links = array(
+                '<a href="' . admin_url( 'options-general.php?page=kmetric-product-config' ) . '" aria-label="Settings">Settings</a>'
+            );
+            $links = array_merge($action_links, $links);
+        }
+        return $links;
+    }
+
 	public static function plugin_row_meta( $links, $file ) {
-        $row_meta = array(
-            'docs'    => '<a href="https://www.kmetric.io/docs/getting-started" aria-label="Docs">Getting Started</a>',
-            'apidocs' => '<a href="https://www.kmetric.io/docs/tracking-api" aria-label="API docs">API docs</a>',
-            'support' => '<a href="mailto:support@kmetric.io" aria-label="Contact">Contact</a>',
-        );
-        return array_merge( $links, $row_meta );
+		if ( $file == KMETRIC_PLUGIN_BASENAME ) {
+			$row_meta = array(
+				'docs'    => '<a href="https://www.kmetric.io/docs/getting-started" aria-label="Docs">Getting Started</a>',
+                'apidocs' => '<a href="https://www.kmetric.io/docs/tracking-api" aria-label="API docs">API docs</a>',
+                'support' => '<a href="mailto:support@kmetric.io" aria-label="Contact">Contact</a>',
+			);
+			return array_merge( $links, $row_meta );
+		}
+        return (array) $links;
     }
     
     public static function get_product_id() {

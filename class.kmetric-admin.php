@@ -103,7 +103,7 @@ class Kmetric_Admin {
     }
     
 	public static function view( $name ) {
-		$file = KMETRIC__PLUGIN_DIR . 'views/'. $name . '.php';
+		$file = KMETRIC_PLUGIN_DIR . 'views/'. $name . '.php';
 		include( $file );
     }
 }

@@ -5,7 +5,7 @@
  * Description: A tracking tool that helps you tracking anything.
  * Version: 0.0.1
  * Author: Kmetric
- * Author URI: https://www.kmetric.io/
+ * Author URI: https://www.kmetric.io
  * Text Domain: kmetric
  * Domain Path: /i18n/languages/
  *

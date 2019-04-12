@@ -1,5 +1,5 @@
 === Kmetric for Woocommerce ===
-Contributors: KogiTech
+Contributors: KmetricTeam
 Donate link: https://www.kmetric.io/
 Tags: kmetric, woocommerce, tracking, analytics
 Requires at least: 3.8

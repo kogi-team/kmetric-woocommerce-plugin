@@ -78,7 +78,7 @@ class Kmetric {
     public static function kmetric_load_sdk() {
 		$kmetric_product_id = self::get_product_id();
 		if( $kmetric_product_id ) {
-			echo '<script>(function (vari, src, a, m) {
+			echo esc_html('<script>(function (vari, src, a, m) {
 				window[vari] = window[vari] || function () {
 				(window[vari].q = window[vari].q || []).push(arguments)};
 				a = document.createElement("script"),
@@ -88,7 +88,7 @@ class Kmetric {
 				m.parentNode.insertBefore(a, m)
 			})("kg", "https://api.kmetric.io/js/sdk-kogi-v1.js");
 			kg("pageview", "'.$kmetric_product_id.'");
-			</script>';
+            </script>');
 		}
 	}
 
@@ -99,7 +99,7 @@ class Kmetric {
             $user_info = get_userdata($user_id);
 
             $params = [];
-            $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
+            $params["fp_id"] = sanitize_text_field($_COOKIE['kmetric_fp_id']);
             $params["product_id"] = $kmetric_product_id;
             $params['user_id'] = $user_id;
             $params["username"] = $user_info->user_login;
@@ -120,7 +120,7 @@ class Kmetric {
             $user_info = get_userdata($user_id);
 
             $params = [];
-            $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
+            $params["fp_id"] = sanitize_text_field($_COOKIE['kmetric_fp_id']);
             $params["product_id"] = $kmetric_product_id;
             $params['user_id'] = $user->ID;
             
@@ -137,9 +137,9 @@ class Kmetric {
         $kmetric_product_id = self::get_product_id();
 		if( $kmetric_product_id ) {
             $product = wc_get_product();
-            echo '<script>
+            echo esc_html('<script>
                 var kmetric_params = [];
-                kmetric_params["fp_id"] = "'.$_COOKIE['kmetric_fp_id'].'";
+                kmetric_params["fp_id"] = "'.sanitize_text_field($_COOKIE['kmetric_fp_id']).'";
                 kmetric_params["user_id"] = "'.get_current_user_id().'";
                 kmetric_params["e_items"] = [{
                     "id" : "'.addslashes($product->get_id()).'",
@@ -150,7 +150,7 @@ class Kmetric {
                 }];
                 kmetric_params["e_action"] = "detail";
                 kg("ecommerce", "'.$kmetric_product_id.'", kmetric_params);
-            </script>';
+            </script>');
         }
     }
 
@@ -159,7 +159,7 @@ class Kmetric {
 
         if( $kmetric_product_id && count(WC()->cart->get_cart()) === 1 ) {
             $params = [];
-            $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
+            $params["fp_id"] = sanitize_text_field($_COOKIE['kmetric_fp_id']);
             $params["product_id"] = $kmetric_product_id;
             $params["e_action"] = 'add_card';
             
@@ -195,7 +195,7 @@ class Kmetric {
 
         if( $kmetric_product_id && count(WC()->cart->get_cart()) === 0 ) {
             $params = [];
-            $params["fp_id"] = $_COOKIE['kmetric_fp_id'];
+            $params["fp_id"] = sanitize_text_field(($_COOKIE['kmetric_fp_id']);
             $params["product_id"] = $kmetric_product_id;
             $params["e_action"] = 'remove_card';
             
@@ -232,7 +232,7 @@ class Kmetric {
             $product = wc_get_product();
             $return = '<script>
                 var kmetric_params = [];
-                kmetric_params["fp_id"] = "'.$_COOKIE['kmetric_fp_id'].'";
+                kmetric_params["fp_id"] = "'.sanitize_text_field($_COOKIE['kmetric_fp_id']).'";
                 kmetric_params["user_id"] = "'.get_current_user_id().'";
                 kmetric_params["e_items"] = [];';
                 
@@ -252,7 +252,7 @@ class Kmetric {
             $return .= 'kmetric_params["e_action"] = "checkout";';
             $return .= 'kg("ecommerce", "'.$kmetric_product_id.'", kmetric_params);';
             $return .= '</script>';
-            echo $return;
+            echo esc_html($return);
         }
     }
      

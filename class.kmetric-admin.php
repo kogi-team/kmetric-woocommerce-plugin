@@ -53,14 +53,13 @@ class Kmetric_Admin {
 		if ( !wp_verify_nonce( $_POST['_wpnonce'], self::NONCE ) )
 			return false;
 
-		$new_product_id = preg_replace( '/[^a-f0-9]/i', '', $_POST['product-id'] );
-
-        self::save_product_id( $new_product_id );
+        self::save_product_id( sanitize_text_field($_POST['product-id']) );
 
 		return true;
     }
     
 	public static function save_product_id( $product_id ) {
+		$product_id = sanitize_text_field( $product_id );
         update_option( 'wordpress_kmetric_product_id', $product_id );
 	}
 
@@ -79,7 +78,7 @@ class Kmetric_Admin {
 
 		if ( isset( $_GET['action'] ) ) {
 			if ( $_GET['action'] == 'save-product-id' ) {
-                self::save_product_id( $_GET['product-id'] );
+                self::save_product_id( sanitize_text_field($_GET['product-id']) );
 				self::display_configuration_page();
                 return;
 			}

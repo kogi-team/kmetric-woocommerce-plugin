@@ -195,7 +195,7 @@ class Kmetric {
 
         if( $kmetric_product_id && count(WC()->cart->get_cart()) === 0 ) {
             $params = [];
-            $params["fp_id"] = sanitize_text_field(($_COOKIE['kmetric_fp_id']);
+            $params["fp_id"] = sanitize_text_field($_COOKIE['kmetric_fp_id']);
             $params["product_id"] = $kmetric_product_id;
             $params["e_action"] = 'remove_card';
             

@@ -6,10 +6,6 @@ class Kmetric_Admin {
     
 	public static function init() {
 		self::init_hooks();
-
-		if ( isset( $_POST['action'] ) && $_POST['action'] == 'enter-product-id' ) {
-			self::enter_product_id();
-		}
 	}
 
 	public static function init_hooks() {
@@ -20,6 +16,7 @@ class Kmetric_Admin {
 
 	public static function admin_init() {
 		load_plugin_textdomain( 'kmetric' );
+		register_setting( 'kmetric-set-product-id', 'wordpress_kmetric_product_id' );
 	}
 
 	public static function admin_menu() {
@@ -45,61 +42,14 @@ class Kmetric_Admin {
 		}
 	}
 
-	public static function enter_product_id() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			die( __( 'Cheatin&#8217; uh?', 'kmetric' ) );
-		}
-
-		if ( !wp_verify_nonce( $_POST['_wpnonce'], self::NONCE ) )
-			return false;
-
-        self::save_product_id( sanitize_text_field($_POST['product-id']) );
-
-		return true;
-    }
-    
-	public static function save_product_id( $product_id ) {
-		$product_id = sanitize_text_field( $product_id );
-        update_option( 'wordpress_kmetric_product_id', $product_id );
-	}
-
 	public static function display_page() {
-		if ( !Kmetric::get_product_id() || ( isset( $_GET['view'] ) && $_GET['view'] == 'start' ) )
-			self::display_start_page();
-		else
-			self::display_configuration_page();
-	}
-
-	public static function display_start_page() {
-		if ( $product_id = Kmetric::get_product_id() ) {
-			self::display_configuration_page();
-			return;
-        }
-
-		if ( isset( $_GET['action'] ) ) {
-			if ( $_GET['action'] == 'save-product-id' ) {
-                self::save_product_id( sanitize_text_field($_GET['product-id']) );
-				self::display_configuration_page();
-                return;
-			}
+		if ( !Kmetric::get_product_id() || ( isset( $_GET['view'] ) && $_GET['view'] == 'start' ) ) {
+			self::view( 'start');
+		} else {
+			$product_id = Kmetric::get_product_id();
+			self::view( 'config' );
 		}
-
-		self::view( 'start');
 	}
-
-	public static function display_configuration_page() {
-		$product_id = Kmetric::get_product_id();
-		self::view( 'config' );
-    }
-    
-    public static function get_page_url( $page = 'config' ) {
-
-		$args = array( 'page' => 'kmetric-product-config' );
-
-		$url = add_query_arg( $args, admin_url( 'options-general.php' ) );
-
-		return $url;
-    }
     
 	public static function view( $name ) {
 		$file = KMETRIC_PLUGIN_DIR . 'views/'. $name . '.php';

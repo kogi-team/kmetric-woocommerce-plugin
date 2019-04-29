@@ -16,13 +16,13 @@
 		<div class="kmetric-boxes">
 			<div class="kmetric-box">
 				<h3><?php esc_html_e( 'Product ID', 'kmetric' ); ?></h3>
-				<form action="<?php echo esc_url( Kmetric_Admin::get_page_url() ); ?>" method="post">
-					<?php wp_nonce_field( Kmetric_Admin::NONCE ) ?>
-					<input type="hidden" name="action" value="enter-product-id">
-					<p style="width: 100%; display: flex; flex-wrap: nowrap; box-sizing: border-box;">
-						<input id="product-id" name="product-id" type="text" size="15" value="" class="regular-text code" style="flex-grow: 1; margin-right: 1rem;">
-						<input type="submit" name="submit" id="submit" class="kmetric-button" value="<?php esc_attr_e( 'Activate', 'kmetric' );?>">
+				<form method="post" action="options.php" class="kmetric-form">
+					<?php settings_fields( 'kmetric-set-product-id' ); ?>
+					<?php do_settings_sections( 'kmetric-set-product-id' ); ?>
+					<p>
+						<input id="wordpress_kmetric_product_id" name="wordpress_kmetric_product_id" type="text" size="15" value="" class="regular-text code" style="display: block;width: 100%;padding: 0.5em;">
 					</p>
+					<?php submit_button( null, 'kmetric-button' ); ?>
 				</form>
 			</div>
 		</div>
